@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-box" id="chat-box"></div>
+        <input type="text" id="user-input" placeholder="Type your question here..." />
+    </div>
+
+    <script>
+        const questions = [
+            { question: "Which U.S. president never lived in the White House?", answer: "George Washington (The White House was completed in 1800, after his presidency)" },
+            { question: "What was the first state to ratify the U.S. Constitution?", answer: "Delaware (December 7, 1787)" },
+            { question: "Who was the first woman to serve as a U.S. Supreme Court Justice?", answer: "Sandra Day O'Connor (Appointed in 1981)" },
+            { question: "Which president was never elected as president or vice president?", answer: "Gerald Ford" },
+            { question: "What year did Alaska and Hawaii become U.S. states?", answer: "1959 (Alaska in January, Hawaii in August)" },
+            { question: "Who was the longest-serving U.S. president?", answer: "Franklin D. Roosevelt (Four terms, 1933-1945)" },
+            { question: "Which state was the last to join the Confederacy during the Civil War?", answer: "Tennessee" },
+            { question: "What was the first capital city of the United States?", answer: "New York City" },
+            { question: "Who was the first U.S. president to appear on television?", answer: "Franklin D. Roosevelt (At the 1939 World's Fair)" },
+            { question: "Which state was purchased from Russia in 1867 for $7.2 million?", answer: "Alaska" },
+            { question: "Who wrote the words to the 'Star-Spangled Banner'?", answer: "Francis Scott Key" },
+            { question: "What was the first American colony to legalize slavery?", answer: "Massachusetts (1641)" },
+            { question: "Which president established the Peace Corps?", answer: "John F. Kennedy (1961)" },
+            { question: "What year did women gain the right to vote nationwide?", answer: "1920 (19th Amendment)" },
+            { question: "Who was the only U.S. president to resign from office?", answer: "Richard Nixon (1974)" },
+            { question: "Which state was the first to grant women the right to vote?", answer: "Wyoming (1869, while still a territory)" },
+            { question: "What was the first national monument in the United States?", answer: "Devils Tower, Wyoming (1906)" },
+            { question: "Who was the first U.S. president to be born in a hospital?", answer: "Jimmy Carter" },
+            { question: "Which president signed the Emancipation Proclamation?", answer: "Abraham Lincoln (1863)" },
+            { question: "What year was the Declaration of Independence signed?", answer: "1776 (Most signatures were added on August 2)" },
+            { question: "Who was the first president to be impeached?", answer: "Andrew Johnson" },
+            { question: "Which state was the first to secede from the Union?", answer: "South Carolina (December 20, 1860)" },
+            { question: "What was the first U.S. federal holiday?", answer: "New Year's Day (1870)" },
+            { question: "Who was the youngest person to become U.S. president?", answer: "Theodore Roosevelt (42 years, 322 days)" },
+            { question: "What year was the first American newspaper published?", answer: "1690 (Publick Occurrences Both Forreign and Domestick)" }
+        ];
+
+        let questionIndex = 0;
+
+        const chatBox = document.getElementById("chat-box");
+        const userInput = document.getElementById("user-input");
+
+        function displayMessage(message, isUser) {
+            const messageElement = document.createElement("div");
+            messageElement.classList.add(isUser ? "user-message" : "chatbot-message");
+            messageElement.textContent = message;
+            chatBox.appendChild(messageElement);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function getAnswer(userQuestion) {
+            const questionObject = questions.find(q => q.question.toLowerCase() === userQuestion.toLowerCase());
+            if (questionObject) {
+                return questionObject.answer;
+            } else {
+                return "I don't have an answer for that question.";
+            }
+        }
+
+        function handleUserInput(event) {
+            if (event.key === "Enter") {
+                const userQuestion = userInput.value.trim();
+                if (userQuestion) {
+                    displayMessage(userQuestion, true);
+                    const answer = getAnswer(userQuestion);
+                    displayMessage(answer, false);
+
+                    // Remove the asked question from the list
+                    questions.splice(questions.indexOf(questions.find(q => q.question.toLowerCase() === userQuestion.toLowerCase())), 1);
+
+                    userInput.value = "";
+                }
+            }
+        }
+
+        userInput.addEventListener("keydown", handleUserInput);
+    </script>
+</body>
+</html>
