@@ -41,17 +41,23 @@
             { question: "What year was the first American newspaper published?", answer: "1690 (Publick Occurrences Both Forreign and Domestick)" }
         ];
 
-        let questionIndex = 0;
-
         const chatBox = document.getElementById("chat-box");
         const userInput = document.getElementById("user-input");
 
-        function displayMessage(message, isUser) {
+        function displayMessageTypingEffect(message, isUser) {
             const messageElement = document.createElement("div");
             messageElement.classList.add(isUser ? "user-message" : "chatbot-message");
-            messageElement.textContent = message;
             chatBox.appendChild(messageElement);
             chatBox.scrollTop = chatBox.scrollHeight;
+
+            let index = 0;
+            const typingInterval = setInterval(() => {
+                messageElement.textContent += message[index];
+                index++;
+                if (index === message.length) {
+                    clearInterval(typingInterval);
+                }
+            }, 100); // Adjust this value for typing speed (100ms between each character)
         }
 
         function getAnswer(userQuestion) {
@@ -59,7 +65,7 @@
             if (questionObject) {
                 return questionObject.answer;
             } else {
-                return "I don't have an answer for that question.";
+                return null;
             }
         }
 
@@ -67,12 +73,22 @@
             if (event.key === "Enter") {
                 const userQuestion = userInput.value.trim();
                 if (userQuestion) {
-                    displayMessage(userQuestion, true);
-                    const answer = getAnswer(userQuestion);
-                    displayMessage(answer, false);
+                    displayMessageTypingEffect(userQuestion, true); // User message typing effect
 
-                    // Remove the asked question from the list
-                    questions.splice(questions.indexOf(questions.find(q => q.question.toLowerCase() === userQuestion.toLowerCase())), 1);
+                    const answer = getAnswer(userQuestion);
+                    if (answer) {
+                        setTimeout(() => {
+                            displayMessageTypingEffect(answer, false); // Chatbot message typing effect
+                        }, 500); // Delay the answer by 0.5 seconds
+                        
+                        // Remove the asked question from the list
+                        questions.splice(questions.indexOf(questions.find(q => q.question.toLowerCase() === userQuestion.toLowerCase())), 1);
+                    } else {
+                        displayMessageTypingEffect("Searching for an answer...", false);
+                        setTimeout(() => {
+                            displayMessageTypingEffect("I found an answer! (simulated) But please note, this is a simulated response.", false);
+                        }, 3000); // Wait for 3 seconds before showing the simulated response
+                    }
 
                     userInput.value = "";
                 }
